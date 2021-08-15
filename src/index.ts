@@ -23,6 +23,7 @@ const PORT = 5000;
 const redis = new RedisClient(process.env.REDIS_URL);
 const app = express();
 
+app.set('trust proxy', true);
 app.use(responseTime());
 app.use(morgan('short'));
 app.use(cors({ exposedHeaders: ['X-Response-Time'] }));
