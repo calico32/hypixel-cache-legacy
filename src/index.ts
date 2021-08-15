@@ -6,7 +6,18 @@ import { Player, PlayerResponse } from 'hypixel-types';
 import RedisClient from 'ioredis';
 import morgan from 'morgan';
 import responseTime from 'response-time';
-import { MojangAPIResponse } from './types';
+import { HypixelCacheResponse } from './types';
+
+interface MojangAPIResponse {
+  name?: string;
+  id?: string;
+  error?: string;
+  errorMessage?: string;
+  legacy?: true;
+  demo?: true;
+}
+
+type CacheHandler = RequestHandler<{ identifier: string; type: string }, HypixelCacheResponse>;
 
 const PORT = 5000;
 const redis = new RedisClient(process.env.REDIS_URL);
@@ -24,7 +35,7 @@ const makeResponse = ({
   player: Player;
   cached: boolean;
   fetchedAt: Date | number;
-}) => ({
+}): HypixelCacheResponse => ({
   success: true,
   cached,
   fetchedAt: new Date(fetchedAt).toISOString(),
@@ -35,7 +46,7 @@ const makeResponse = ({
 
 const uuidRegex = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
 
-const findCached: RequestHandler = async (req, res, next) => {
+const findCached: CacheHandler = async (req, res, next) => {
   const { identifier, type } = req.params;
 
   let uuid: string;
@@ -68,7 +79,7 @@ const findCached: RequestHandler = async (req, res, next) => {
   }
 };
 
-const fetchFromApi: RequestHandler = async (req, res, next) => {
+const fetchFromApi: CacheHandler = async (req, res, next) => {
   try {
     const { identifier, type } = req.params;
 

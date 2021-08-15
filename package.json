@@ -1,6 +1,10 @@
 {
   "name": "hypixel-cache",
   "packageManager": "yarn@3.0.0",
+  "types": "src/types.d.ts",
+  "files": [
+    "src/types.d.ts"
+  ],
   "scripts": {
     "watch": "NODE_ENV=development webpack watch",
     "dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
