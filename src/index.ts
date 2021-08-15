@@ -48,7 +48,7 @@ const makeResponse = ({
 const uuidRegex = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
 
 const authenticate: CacheHandler = async (req, res, next) => {
-  const key = req.headers['X-Secret'];
+  const key = req.headers['x-secret'];
 
   if (key !== process.env.HYPIXEL_CACHE_SECRET)
     return res.status(401).json({ success: false, error: 'Invalid API key' });
