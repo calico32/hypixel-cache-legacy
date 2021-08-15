@@ -15,6 +15,7 @@ services:
     environment:
       - REDIS_URL=redis://redis
       - HYPIXEL_API_KEY
+      - HYPIXEL_CACHE_SECRET
 
 volumes:
   redis-data: {}

@@ -46,6 +46,15 @@ const makeResponse = ({
 
 const uuidRegex = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
 
+const authenticate: CacheHandler = async (req, res, next) => {
+  const key = req.headers['X-Secret'];
+
+  if (key !== process.env.HYPIXEL_CACHE_SECRET)
+    return res.status(401).json({ success: false, error: 'Invalid API key' });
+
+  next();
+};
+
 const findCached: CacheHandler = async (req, res, next) => {
   const { identifier, type } = req.params;
 
@@ -167,7 +176,7 @@ const fetchFromApi: CacheHandler = async (req, res, next) => {
   }
 };
 
-app.get('/:type/:identifier', findCached, fetchFromApi);
+app.get('/:type/:identifier', authenticate, findCached, fetchFromApi);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, error: 'Not found' });
